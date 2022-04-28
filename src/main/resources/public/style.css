@@ -1,0 +1,41 @@
+body {
+    background: grey;
+}
+
+label {
+    display: block;
+}
+
+table, th, td {
+    border-collapse: collapse;
+    border-bottom: 2px solid black;
+    text-align: center;
+}
+
+#updatePanel {
+    width: 100vw;
+    height: 100vh;
+    background: rgba(10, 10, 10, 0.3);
+    position: fixed;
+    left: 0;
+    top: 0;
+    display: none;
+}
+
+#updatePanel form {
+    position: absolute;
+    top: 50vh;
+    left: 50vw;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    background: #444;
+    padding: 20px;
+}
+
+#CloseButton {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+}

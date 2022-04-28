@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
+<header>
+    LINKS<br>
+    <a href="index.html">DODAWANIE</a>
+    <a href="update.html">USUWANIE/EDYCJA</a>
+    <a href="admin.html">GENEROWANIE FAKTURY</a>
+    <a href="search.html">GENEROWANIE ZESTAWIENIA Z PRZEDZIAŁÓW</a>
+</header>
+<form>
+    <label>nazwa: <input id="name"/></label>
+    <label>ilosc drzwi <select id="doorsCount">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+    </select></label>
+
+    <label>price: <input id="price" type="number" min="0"/></label>
+    <label>year: <select id="year"></select></label>
+    <label><input id="isDestroyed" type="checkbox"/> uszkodzony?</label>
+    <label>poduszki powietrzne kierownica|pasażer|tylnia kanapa|boczne z tyłu
+        <input id="poduszkaKierownia" type="checkbox">
+        <input id="poduszkaPasazer" type="checkbox">
+        <input id="poduszkaTylnia" type="checkbox">
+        <input id="poduszkaBoczne" type="checkbox">
+    </label>
+    <label>Kolor <input id="color" type="color" name="color"/></label>
+    <label>Data sprzedaży <input id="sellDate" type="date" name="date"/></label>
+    <label>Vat <input id="vat" type="number"/></label>
+    <label>Obrazek <select id="image">
+        <option value="1.jpg">Obrazek 1</option>
+        <option value="2.jpeg">Obrazek 2</option>
+        <option value="3.jpg">Obrazek 3</option>
+    </select></label>
+    <label><input id="language1" type="radio" name="language"/> polski</label>
+    <label><input id="language2" type="radio" name="language"/> angielski</label>
+    <input type="button" id="button" value="submit">
+</form>
+
+<script>
+    const create = async () => {
+        let name = document.querySelector("#name").value;
+        let doorsCount = document.querySelector("#doorsCount").value;
+        let price = document.querySelector("#price").value;
+        let year = document.querySelector("#year").value;
+        let isDestroyed = document.querySelector("#isDestroyed").checked;
+        let language1 = document.querySelector("#language1").checked;
+        let language2 = document.querySelector("#language2").checked;
+        let poduszkaKierownica = document.querySelector("#poduszkaKierownia").checked;
+        let poduszkaPasazer = document.querySelector("#poduszkaPasazer").checked;
+        let poduszkaTylnia = document.querySelector("#poduszkaTylnia").checked;
+        let poduszkaBoczne = document.querySelector("#poduszkaBoczne").checked;
+        let color = document.querySelector("#color").value;
+        let sellDate = document.querySelector("#sellDate").value;
+        let vat = document.querySelector("#vat").value;
+        let image = document.querySelector("#image").value;
+        console.log(language1)
+        let language = "";
+        if (language1) {
+            language = "polski"
+        }
+        if (language2) {
+            language = "angielski"
+        }
+        let body = {
+            name: name,
+            doorsCount: doorsCount,
+            isDestroyed: isDestroyed,
+            language: language,
+            price: price,
+            year: year,
+            color: color,
+            sellDate: sellDate,
+            vat: vat,
+            imageSrc: image,
+            airBags: [
+                {
+                    name: "Kierownica",
+                    isExist: poduszkaKierownica
+                },
+                {
+                    name: "Pasazer",
+                    isExist: poduszkaPasazer
+                },
+                {
+                    name: "Tylnia",
+                    isExist: poduszkaTylnia
+                },
+                {
+                    name: "Boczne",
+                    isExist: poduszkaBoczne
+                }
+            ]
+        }
+
+        let data = await fetch("/createCar", {
+            method: "POST",
+            body: JSON.stringify(body)
+        });
+        let json = await data.json();
+        alert(JSON.stringify(json, null, 5));
+
+    }
+
+    document.querySelector("#button").addEventListener("click", () => create());
+    for(let i=1900;i<2020;i++){
+        let option = document.createElement("option")
+        option.innerText = i;
+        option.value = i;
+        document.getElementById("year").appendChild(option);
+    }
+</script>
+
+</body>
+</html>

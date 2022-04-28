@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
+<header>
+    LINKS<br>
+    <a href="index.html">DODAWANIE</a>
+    <a href="update.html">USUWANIE/EDYCJA</a>
+    <a href="admin.html">GENEROWANIE FAKTURY</a>
+    <a href="search.html">GENEROWANIE ZESTAWIENIA Z PRZEDZIAŁÓW</a>
+</header>
+<button onclick="generateCars()">GENERUJ 10 AUT</button>
+<table>
+
+</table>
+
+<script>
+    const generateCars = async () => {
+        await fetch("/generateRandom", {
+            method: "POST"
+        });
+        await loadData();
+
+    }
+    const generateInvoice = async (uuid) => {
+        await fetch("/generateInvoice?uuid=" + uuid, {
+            method: "POST"
+        });
+        await loadData();
+    }
+
+    const loadData = async () => {
+        let data = await fetch("/getCar");
+        let json = await data.json();
+        let table = document.querySelector("table");
+        table.innerHTML = `
+                <tr>
+                    <th>id</th>
+                    <th>uuid</th>
+                    <th>nazwa</th>
+                    <th>liczba drzwi</th>
+                    <th>cena</th>
+                    <th>rok</th>
+                    <th>stan</th>
+                    <th>jezyk</th>
+                    <th>airBags</th>
+                    <th>color</th>
+                    <th>Data sprzedarzy</th>
+                    <th>Vat</th>
+                    <th>Obrazek</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            `;
+        json.forEach((row, i) => {
+            let airBags = row.airBags.map(a => a.name + ": " + a.isExist + "<br/>");
+
+            let r = `
+                <tr>
+                    <td>${i}</td>
+                    <td>${row.uuid}</td>
+                    <td>${row.name}</td>
+                    <td>${row.doorsCount}</td>
+                    <td>${row.price}</td>
+                    <td>${row.year}</td>
+                    <td>${row.isDestroyed ? "Zniszczony" : "sprawny"}</td>
+                    <td>${row.language}</td>
+                    <td>${airBags}</td>
+                    <td><div style="width:200px;height: 200px;background-color: ${row.color}"></div></td>
+                    <td>${row.sellDate}</td>
+                    <td>${row.vat}</td>
+                    <td><img src="images/${row.imageSrc}" style="width:200px"></td>
+                    <td><button onclick='generateInvoice(\"${row.uuid}\")'>GENERUJ</button></td>
+                    <td>${row.hasInvoice ? "<a href='invoice/" + row.uuid + ".pdf' download='" + row.uuid + ".pdf'>DOWNLOAD</a>" : ""}</td>
+                     </tr>
+            `;
+            table.innerHTML += r;
+        })
+
+    }
+    loadData();
+</script>
+
+</body>
+</html>
